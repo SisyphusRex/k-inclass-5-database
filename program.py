@@ -4,9 +4,31 @@
 import os
 
 # First-Party imports
-from employee import Employee
+from employee import Employee, Base
 from user_interface import UserInterface
 from utils import CSVProcessor
+
+
+# Third Party Imports
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+
+engine = create_engine("sqlite:///db.sqlite3", echo=False)
+Session = sessionmaker(bind=engine)
+session = Session()
+
+
+def create_database():
+    """Create the database"""
+    Base.metadata.create_all(engine)
+
+
+def populate_database(employees):
+    """populate database from list of employees"""
+    for employee in employees:
+        session.add(employee)
+        session.commit()
 
 
 def main(*args):
@@ -40,20 +62,30 @@ def main(*args):
     # Make a new instance of the UserInterface class
     ui = UserInterface()
 
-    # Path to CSV file
-    path_to_csv_file = "employees.csv"
+    # if we do not have the database, we can create it.
+    if not os.path.exists("./db.sqlite3"):
+        # Create the database
+        create_database()
 
-    # Make new instance of CSVProcessor class
-    csv_processor = CSVProcessor()
+    if session.query(Employee).first() is None:
 
-    # Reading the CSV file could raise exceptions. Be sure to catch them.
-    try:
-        # Call the import_csv method sending in our path to the csv and the Employee list.
-        csv_processor.import_csv(path_to_csv_file, employees)
-    except FileNotFoundError:
-        ui.print_file_not_found_error()
-    except EOFError:
-        ui.print_empty_file_error()
+        # Path to CSV file
+        path_to_csv_file = "employees.csv"
+
+        # Make new instance of CSVProcessor class
+        csv_processor = CSVProcessor()
+
+        # Reading the CSV file could raise exceptions. Be sure to catch them.
+        try:
+            # Call the import_csv method sending in our path to the csv and the Employee list.
+            csv_processor.import_csv(path_to_csv_file, employees)
+        except FileNotFoundError:
+            ui.print_file_not_found_error()
+        except EOFError:
+            ui.print_empty_file_error()
+
+        # Populate the database with data from CSV
+        populate_database(employees)
 
     # Get some input from the user
     selection = ui.display_menu_and_get_response()
