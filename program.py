@@ -143,6 +143,59 @@ def main(*args):
                 output_string += f"{employee}{os.linesep}"
             ui.print_list(output_string)
 
+            # Add new entry to thedatabase
+            ui.print("add new entry")
+            new_employee = Employee("David", "Barnes", 999.99)
+            session.add(new_employee)
+            session.commit()
+            employees = session.query(Employee).all()
+            output_string = ""
+            for employee in employees:
+                output_string += f"{employee}{os.linesep}"
+            ui.print_list(output_string)
+
+            # Update an entry in the database
+            ui.print("update an entry")
+            employee_to_update = (
+                session.query(Employee)
+                .filter(
+                    Employee.first_name == "David",
+                )
+                .first()
+            )
+            ui.print_entry(employee_to_update)
+            employee_to_update.last_name = "BBBBArnesss"
+            session.commit()
+
+            employees = session.query(Employee).all()
+            output_string = ""
+            for employee in employees:
+                output_string += f"{employee}{os.linesep}"
+            ui.print_list(output_string)
+
+            # Delete an entry from the database
+            ui.print("delete an entry from database")
+            employee_to_delete = (
+                session.query(Employee).filter(Employee.first_name == "David").first()
+            )
+            ui.print_entry(employee_to_delete)
+            session.delete(employee_to_delete)
+            session.commit()
+
+            employee_to_delete = (
+                session.query(Employee).filter(Employee.first_name == "David").first()
+            )
+            ui.print_entry(employee_to_delete)
+
+            if employee_to_delete is None:
+                ui.print("Record successfully deleted")
+
+            employees = session.query(Employee).all()
+            output_string = ""
+            for employee in employees:
+                output_string += f"{employee}{os.linesep}"
+            ui.print_list(output_string)
+
         # Check for different choice here if there was one to check.
 
         # Lastly, re-prompt user for input on what to do.
