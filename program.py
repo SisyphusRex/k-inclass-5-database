@@ -98,6 +98,11 @@ def main(*args):
             ##########################################################
             # Query and print out all entries                        #
             ##########################################################
+            ui.print("Query and print out all entries")
+
+            # get the employees from the database
+            employees = session.query(Employee).all()
+
             # Create string for concatenation
             output_string = ""
 
@@ -111,14 +116,32 @@ def main(*args):
             ##########################################################
             # Query single entry and primary key                     #
             ##########################################################
-
+            ui.print("Query single entry by primary key")
+            employee_by_pk = session.query(Employee).get(1)
+            ui.print_entry(employee_by_pk)
             ##########################################################
             # Query single entry by criteria                         #
             ##########################################################
-
+            ui.print("Query single entry by criteria")
+            single_employee_by_criteria = (
+                session.query(Employee)
+                .filter(
+                    Employee.first_name == "Jean-Luc",
+                )
+                .first()
+            )
+            ui.print_entry(single_employee_by_criteria)
             ##########################################################
             # Query multiple entries by criteria                     #
             ##########################################################
+            ui.print("Query multiple entries by criteria")
+            employee_by_criteria = (
+                session.query(Employee).filter(Employee.weekly_salary > 400)
+            ).all()
+            output_string = ""
+            for employee in employee_by_criteria:
+                output_string += f"{employee}{os.linesep}"
+            ui.print_list(output_string)
 
         # Check for different choice here if there was one to check.
 
