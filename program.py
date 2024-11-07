@@ -94,6 +94,10 @@ def main(*args):
     while selection != ui.MAX_MENU_CHOICES:
         # See if the input they sent is equal to 1.
         if selection == 1:
+
+            ##########################################################
+            # Query and print out all entries                        #
+            ##########################################################
             # Create string for concatenation
             output_string = ""
 
@@ -104,6 +108,17 @@ def main(*args):
 
             # Use the UI class to print out the string
             ui.print_list(output_string)
+            ##########################################################
+            # Query single entry and primary key                     #
+            ##########################################################
+
+            ##########################################################
+            # Query single entry by criteria                         #
+            ##########################################################
+
+            ##########################################################
+            # Query multiple entries by criteria                     #
+            ##########################################################
 
         # Check for different choice here if there was one to check.
 
